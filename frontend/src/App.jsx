@@ -21,7 +21,7 @@ function App() {
   const [items, setItems] = useState([])
   const [listName, setListName] = useState("")
   const [newItemText, setNewItemText] = useState("")
-  const [newListColor, setNewListColor] = useState("#666")
+  const [newListColor, setNewListColor] = useState("#666666")
   const activeListName = lists.find(l => l.id === activeListId)?.name
   const [sidebarWidth, setSidebarWidth] = useState(200)
 
@@ -80,6 +80,7 @@ function App() {
   }
 
   // Create list (append only list data)
+  const randomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')
   const createList = async () => {
     if (!listName) return
 
@@ -93,8 +94,11 @@ function App() {
     })
 
     const newList = await res.json()
+    console.log("new list from server:", newList)
 
     setLists(prev => [...prev, newList])
+    setActiveListId(newList.id)
+    setItems([])
     setListName("")
     setNewListColor("#666")
   }
@@ -180,6 +184,7 @@ function App() {
   }
 
   const activeListColor = lists.find(l => l.id === activeListId)?.color
+  console.log("activeListId:", activeListId, "activeListColor:", activeListColor, "lists:", lists)
 
   /* ---------------- Return (UI) ---------------- */
   return (
@@ -190,7 +195,7 @@ function App() {
         <h2>Lists</h2>
 
         <div className="new-list-btn" >
-          <button onClick={() => setIsOpen(true)}>New List</button>
+          <button onClick={() => { setNewListColor(randomColor()); setIsOpen(true) }}>New List</button>
         </div>
 
         <ul>
@@ -344,6 +349,7 @@ function EditableRow({
   isActive,
   isEditing,
   value,
+  onCancel,
   onChange,
   onClick,
   onColorChange,
@@ -379,6 +385,7 @@ function EditableRow({
           )}
 
           <button onClick={onSave}>save</button>
+          <button onClick={onCancel}>cancel</button>
         </>
       ) : (
         <>
@@ -413,6 +420,10 @@ function Item(props) {
       color={parentColor}
       isEditing={editingId === item.id}
       value={editValue}
+      onCancel={() => {
+        setEditingId(null)
+        setEditValue("")
+      }}
       onChange={setEditValue}
       onColorChange={() => {}}
       onEdit={() => {
@@ -462,6 +473,10 @@ function ItemList(props) {
       color={editingListId === list.id ? editingColor : list.color}      isActive={isActive}
       isEditing={editingListId === list.id}
       value={editingListValue}
+      onCancel={() => {
+        setEditingListId(null)
+        setEditingListValue("")
+      }}
       onChange={setEditingListValue}
       onClick={() => setActiveListId(list.id)}
       onColorChange={setEditingColor}

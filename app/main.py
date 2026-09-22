@@ -2,13 +2,12 @@ from fastapi import Depends
 from fastapi import FastAPI, HTTPException
 from database import SessionLocal, engine, Base
 from sqlalchemy.orm import Session
-from schemas import ItemCreate, ItemResponse, ListResponse
+from schemas import ItemCreate, ItemResponse, ListResponse, ListUpdate, ItemUpdate, ListCreate
 from fastapi.middleware.cors import CORSMiddleware
 from app.services import list_service, item_service
 from pydantic import BaseModel
 from typing import List
 from models import ItemList
-from schemas import ListUpdate, ItemUpdate
 
 
 app = FastAPI()

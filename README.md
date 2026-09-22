@@ -20,6 +20,7 @@ fastapi_app/
     └── task_service.py
 
 To start backend:
+source .venv/bin/activate
 uvicorn app.main:app --reload
 
 sudo -u postgres createdb -O rich fastapi_app_db
